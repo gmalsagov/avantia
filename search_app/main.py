@@ -28,8 +28,8 @@ def search_name(query: str):
     if surname:
         body = {
             "query": {
-                "bool": {
-                    "must": [{"match": {"laureates.firstname": firstname}},{"match": {"laureates.surname": surname}}]
+                "query_string": {
+                    "query": f"(laureates.firstname:{firstname}) AND (laureates.surname:{surname})"
                 }
             }
         }
