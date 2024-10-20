@@ -23,3 +23,18 @@ def search_name(query: str):
         }
     )
     return [hit["_source"] for hit in response["hits"]["hits"]]
+
+
+@app.get("/search/category")
+def search_category(query: str):
+    response = es.search(
+        index="nobel_prizes",
+        body={
+            "query": {
+                "match": {
+                    "category": query
+                }
+            }
+        }
+    )
+    return response['hits']['hits']
