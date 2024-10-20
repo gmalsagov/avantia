@@ -26,16 +26,14 @@ def search_name(query: str):
         }
     }
     if surname:
-        body={
+        body = {
             "query": {
-                "multi_match": {
-                    "query": f"{firstname} {surname}",
-                    "fields": ["laureates.firstname", "laureates.surname"],
-                    "fuzziness": "AUTO"
+                "bool": {
+                    "must": [{"match": {"laureates.firstname": firstname}},{"match": {"laureates.surname": surname}}]
                 }
             }
         }
-
+    print(body)
     response = es.search(
         index="nobel_prizes",
         body=body
