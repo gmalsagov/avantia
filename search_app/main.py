@@ -7,20 +7,38 @@ es = Elasticsearch(hosts=["http://elasticsearch:9200"])
 
 @app.get("/search/name")
 def search_name(query: str):
-    response = es.search(
-        index="nobel_prizes",
-        body={
-            "query": {
-                "nested": {
-                    "path": "laureates",
-                    "query": {
-                        "match": {
-                            "laureates.firstname": query
-                        }
+    firstname = query
+    surname = ""
+    if len(query.split(" ")) > 1:
+        firstname = query.split(" ")[0],
+        surname = query.split(" ")[1]
+
+    body={
+        "query": {
+            "nested": {
+                "path": "laureates",
+                "query": {
+                    "match": {
+                        "laureates.firstname": firstname
                     }
                 }
             }
         }
+    }
+    if surname:
+        body={
+            "query": {
+                "multi_match": {
+                    "query": f"{firstname} {surname}",
+                    "fields": ["laureates.firstname", "laureates.surname"],
+                    "fuzziness": "AUTO"
+                }
+            }
+        }
+
+    response = es.search(
+        index="nobel_prizes",
+        body=body
     )
     return [hit["_source"] for hit in response["hits"]["hits"]]
 
