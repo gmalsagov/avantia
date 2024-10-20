@@ -13,6 +13,15 @@ services:
       - es_data:/usr/share/elasticsearch/data
     networks:
       - es_network
+  search:
+    build: ./search_app
+    container_name: search_app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - elasticsearch
+    networks:
+      - es_network
 volumes:
   es_data:
     driver: local
