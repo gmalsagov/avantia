@@ -9,3 +9,14 @@ services:
       - xpack.security.audit.enabled=false
     ports:
       - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - es_network
+volumes:
+  es_data:
+    driver: local
+
+networks:
+  es_network:
+    driver: bridge
