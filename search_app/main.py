@@ -11,10 +11,15 @@ def search_name(query: str):
         index="nobel_prizes",
         body={
             "query": {
-                "match_phrase_prefix": {
-                    "laureates.firstname": query
+                "nested": {
+                    "path": "laureates",
+                    "query": {
+                        "match": {
+                            "laureates.firstname": query
+                        }
+                    }
                 }
             }
         }
     )
-    return response['hits']['hits']
+    return [hit["_source"] for hit in response["hits"]["hits"]]
