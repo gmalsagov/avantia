@@ -44,6 +44,7 @@ def ingest_data():
     helpers.bulk(es, actions)
     print(f"Ingested {len(actions)} documents into '{INDEX_NAME}' index.")
 
+
 if __name__ == "__main__":
 
     try:

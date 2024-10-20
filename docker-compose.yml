@@ -5,5 +5,7 @@ services:
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
+      - xpack.security.enabled=false  # Disable security features including authentication
+      - xpack.security.audit.enabled=false
     ports:
       - "9200:9200"
