@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch, helpers
 
 INDEX_NAME = 'nobel_prizes'
 
-def create_index():
+def create_index(elasticsearch):
     mapping = {
         "mappings": {
             "properties": {
@@ -22,15 +22,15 @@ def create_index():
         }
     }
 
-    if not es.indices.exists(index=INDEX_NAME):
-        es.indices.create(index=INDEX_NAME, body=mapping)
+    if not elasticsearch.indices.exists(index=INDEX_NAME):
+        elasticsearch.indices.create(index=INDEX_NAME, body=mapping)
         print(f"Index '{INDEX_NAME}' created.")
     else:
         print(f"Index '{INDEX_NAME}' already exists.")
 
 
-def ingest_data():
-    with open('data/prize.json', 'r') as f:
+def ingest_data(elasticsearch):
+    with open('../data/prize.json', 'r') as f:
         data = json.load(f)
 
     actions = []
@@ -41,7 +41,7 @@ def ingest_data():
         }
         actions.append(action)
 
-    helpers.bulk(es, actions)
+    helpers.bulk(elasticsearch, actions)
     print(f"Ingested {len(actions)} documents into '{INDEX_NAME}' index.")
 
 
@@ -54,6 +54,5 @@ if __name__ == "__main__":
         print("Unable to connect to server")
         exit(1)
 
-
-    create_index()
-    ingest_data()
+    create_index(es)
+    ingest_data(es)
